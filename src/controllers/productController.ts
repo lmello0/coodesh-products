@@ -4,6 +4,7 @@ import { NotFoundException } from '../exceptions/NotFoundException';
 import { GetProductService } from '../services/GetProductService';
 import { DeleteProductService } from '../services/DeleteProductService';
 import { UpdateProductService } from '../services/UpdateProductService';
+import { getErrors } from '../utils/getErrors';
 
 export class ProductController {
   constructor(
@@ -56,6 +57,16 @@ export class ProductController {
 
       if (!code) {
         return res.status(400).send('No code provided!');
+      }
+
+      const errors = getErrors(data);
+
+      if (errors) {
+        return res.status(400).json(
+          errors.map((error) => {
+            return { error };
+          }),
+        );
       }
 
       const newData = await this.updateProductService.execute(code, data);
