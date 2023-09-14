@@ -3,11 +3,13 @@ import { GetProductsService } from '../services/GetProductsService';
 import { NotFoundException } from '../exceptions/NotFoundException';
 import { GetProductService } from '../services/GetProductService';
 import { DeleteProductService } from '../services/DeleteProductService';
+import { UpdateProductService } from '../services/UpdateProductService';
 
 export class ProductController {
   constructor(
     private readonly getProductsService: GetProductsService,
     private readonly getProductService: GetProductService,
+    private readonly updateProductService: UpdateProductService,
     private readonly deleteProductService: DeleteProductService,
   ) {}
 
@@ -48,7 +50,20 @@ export class ProductController {
   }
 
   async updateProduct(req: Request, res: Response) {
-    return res.send('WIP');
+    try {
+      const { code } = req.params;
+      const data = req.body;
+
+      if (!code) {
+        return res.status(400).send('No code provided!');
+      }
+
+      const newData = await this.updateProductService.execute(code, data);
+
+      return res.json(newData);
+    } catch (err) {
+      this.handleException(err, res);
+    }
   }
 
   async deleteProduct(req: Request, res: Response) {

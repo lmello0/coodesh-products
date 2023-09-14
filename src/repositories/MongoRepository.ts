@@ -1,5 +1,6 @@
 import { DeleteProductDTO } from '../dtos/DeleteProductDTO';
 import { GetProductDTO } from '../dtos/GetProductDTO';
+import { UpdateProductDTO } from '../dtos/UpdateProductDTO';
 import { NotFoundException } from '../exceptions/NotFoundException';
 import { IProduct } from '../interfaces/IProduct';
 import { Product } from '../models/Product';
@@ -19,6 +20,23 @@ export class MongoRepository implements MongoRepositoryProtocol {
       code: data.code,
       $nor: [{ status: 'trash' }],
     }).select('-_id');
+
+    if (!product) {
+      throw new NotFoundException();
+    }
+
+    return product;
+  }
+
+  async updateOne(data: UpdateProductDTO): Promise<IProduct> {
+    const product = await Product.findOneAndUpdate(
+      {
+        code: data.code,
+        $nor: [{ status: 'trash' }],
+      },
+      data,
+      { new: true },
+    ).select('-_id');
 
     if (!product) {
       throw new NotFoundException();
