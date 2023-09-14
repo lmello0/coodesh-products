@@ -7,13 +7,18 @@ import { MongoRepositoryProtocol } from './MongoRepositoryProtocol';
 
 export class MongoRepository implements MongoRepositoryProtocol {
   async findAll(): Promise<IProduct[]> {
-    const products = await Product.find().select('-_id');
+    const products = await Product.find({ $nor: [{ status: 'trash' }] }).select(
+      '-_id',
+    );
 
     return products;
   }
 
   async findOne(data: GetProductDTO): Promise<IProduct> {
-    const product = await Product.findOne({ code: data.code }).select('-_id');
+    const product = await Product.findOne({
+      code: data.code,
+      $nor: [{ status: 'trash' }],
+    }).select('-_id');
 
     if (!product) {
       throw new NotFoundException();

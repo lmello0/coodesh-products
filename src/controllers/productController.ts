@@ -27,7 +27,7 @@ export class ProductController {
 
       return res.json(data);
     } catch (err) {
-      return res.status(500).send('Unexpected error');
+      this.handleException(err, res);
     }
   }
 
@@ -43,11 +43,7 @@ export class ProductController {
 
       return res.json(data);
     } catch (err) {
-      if (err instanceof NotFoundException) {
-        return res.status(404).send(err);
-      }
-
-      return res.status(500).send('Unexpected error');
+      this.handleException(err, res);
     }
   }
 
