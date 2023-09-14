@@ -5,10 +5,4 @@ const redis = createClient({
   password: process.env.REDIS_PASSWORD,
 });
 
-redis.on('error', (err) => {
-  redis.quit();
-
-  throw err;
-});
-
 export { redis };

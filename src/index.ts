@@ -30,6 +30,16 @@ async function exit(server?: Server) {
   }
 }
 
+redis.on('error', (err) => {
+  console.error('Redis connection error: ', err);
+  exit();
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error: ', err);
+  exit();
+});
+
 run()
   .then(async () => {
     try {
