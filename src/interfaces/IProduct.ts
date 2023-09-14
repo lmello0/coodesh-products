@@ -1,12 +1,14 @@
+export type StatusType = 'draft' | 'trash' | 'published';
+
 export interface IProduct {
   code: number;
-  status: string;
-  importedT: Date;
+  status: StatusType;
+  imported_t: Date;
   url: string;
   creator: string;
-  createdT: Date;
-  lastModifiedT: Date;
-  productName: string;
+  created_t: Date;
+  last_modified_t: Date;
+  product_name: string;
   quantity: string;
   brands: string[];
   categories: string[];
@@ -16,10 +18,10 @@ export interface IProduct {
   stores: string[];
   ingredients_text: string[];
   traces: string[];
-  servingSize: string;
-  servingQuantity: number;
-  nutriscoreScore: number;
-  nutriscoreGrade: string;
-  mainCategory: string;
-  imageUrl: string;
+  serving_size: string;
+  serving_quantity: number;
+  nutriscore_score: number;
+  nutriscore_grade: string;
+  main_category: string;
+  image_url: string;
 }
