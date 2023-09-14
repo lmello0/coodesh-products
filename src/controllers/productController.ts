@@ -76,7 +76,7 @@ export class ProductController {
 
       const data = await this.deleteProductService.execute({ code });
 
-      return res.json(data);
+      return res.json({ status: data });
     } catch (err) {
       this.handleException(err, res);
     }

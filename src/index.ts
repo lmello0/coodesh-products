@@ -34,7 +34,7 @@ run()
     });
 
     process.on('SIGINT', async () => {
-      console.warn('SIGINT received, shutting down the server...');
+      console.warn('\nSIGINT received, shutting down the server...');
 
       await exit(server);
       console.log('Application finished');
