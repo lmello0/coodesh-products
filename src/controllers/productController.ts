@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
 import { GetProductsService } from '../services/GetProductsService';
+import { NotFoundException } from '../exceptions/NotFoundException';
+import { GetProductService } from '../services/GetProductService';
 
 export class ProductController {
-  constructor(private readonly getProductsService: GetProductsService) {}
+  constructor(
+    private readonly getProductsService: GetProductsService,
+    private readonly getProductService: GetProductService,
+  ) {}
 
   async getProducts(req: Request, res: Response) {
     try {
@@ -15,7 +20,23 @@ export class ProductController {
   }
 
   async getProduct(req: Request, res: Response) {
-    return res.send('WIP');
+    try {
+      const { code } = req.params;
+
+      if (!code) {
+        return res.status(400).send('No code provided!');
+      }
+
+      const data = await this.getProductService.execute({ code });
+
+      return res.json(data);
+    } catch (err) {
+      if (err instanceof NotFoundException) {
+        return res.status(404).send(err);
+      }
+
+      return res.status(500).send('Unexpected error');
+    }
   }
 
   async updateProduct(req: Request, res: Response) {
