@@ -28,14 +28,17 @@ export class ProductController {
 
   async getProducts(req: Request, res: Response) {
     try {
-      const key = req.originalUrl;
+      const page = parseInt(req.params.page) || 1;
+      const limit = parseInt(req.params.limit) || 100;
+
+      const key = `${req.originalUrl}:${page}:${limit}`;
       const cachedData = await this.cache.get(key);
 
       if (cachedData) {
         return res.json(cachedData);
       }
 
-      const data = await this.getProductsService.execute();
+      const data = await this.getProductsService.execute(page, limit);
 
       this.cache.store(key, data);
 

@@ -7,10 +7,11 @@ import { Product } from '../models/Product';
 import { MongoRepositoryProtocol } from './MongoRepositoryProtocol';
 
 export class MongoRepository implements MongoRepositoryProtocol {
-  async findAll(): Promise<IProduct[]> {
-    const products = await Product.find({ $nor: [{ status: 'trash' }] }).select(
-      '-_id',
-    );
+  async findAll(page: number, limit: number): Promise<IProduct[]> {
+    const products = await Product.find({ $nor: [{ status: 'trash' }] })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .select('-_id');
 
     return products;
   }

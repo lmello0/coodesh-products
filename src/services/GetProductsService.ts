@@ -3,7 +3,10 @@ import { MongoRepositoryProtocol } from '../repositories/MongoRepositoryProtocol
 export class GetProductsService {
   constructor(private readonly db: MongoRepositoryProtocol) {}
 
-  async execute() {
-    return await this.db.findAll();
+  async execute(page: number, limit: number) {
+    const products = await this.db.findAll(page, limit);
+    const hasNext = products.length >= limit;
+
+    return { hasNext, products };
   }
 }
