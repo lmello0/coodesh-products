@@ -5,6 +5,7 @@ import { GetProductService } from '../services/GetProductService';
 import { DeleteProductService } from '../services/DeleteProductService';
 import { UpdateProductService } from '../services/UpdateProductService';
 import { getErrors } from '../utils/getErrors';
+import { RedisRepositoryProtocol } from '../repositories/RedisRepositoryProtocol';
 
 export class ProductController {
   constructor(
@@ -12,6 +13,7 @@ export class ProductController {
     private readonly getProductService: GetProductService,
     private readonly updateProductService: UpdateProductService,
     private readonly deleteProductService: DeleteProductService,
+    private readonly cache: RedisRepositoryProtocol,
   ) {}
 
   private handleException(err: unknown, res: Response) {
@@ -26,7 +28,16 @@ export class ProductController {
 
   async getProducts(req: Request, res: Response) {
     try {
+      const key = req.originalUrl;
+      const cachedData = await this.cache.get(key);
+
+      if (cachedData) {
+        return res.json(cachedData);
+      }
+
       const data = await this.getProductsService.execute();
+
+      this.cache.store(key, data);
 
       return res.json(data);
     } catch (err) {
@@ -42,7 +53,16 @@ export class ProductController {
         return res.status(400).send('No code provided!');
       }
 
+      const key = req.originalUrl;
+      const cachedData = await this.cache.get(key);
+
+      if (cachedData) {
+        return res.json(cachedData);
+      }
+
       const data = await this.getProductService.execute({ code });
+
+      this.cache.store(key, data);
 
       return res.json(data);
     } catch (err) {
