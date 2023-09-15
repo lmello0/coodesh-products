@@ -5,5 +5,7 @@ export interface RedisRepositoryProtocol {
 
   store(key: string, data: object): void;
 
-  updateCache(): void;
+  updateCache(code: string, data?: IProduct): void;
+
+  delete(code: string): void;
 }

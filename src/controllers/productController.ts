@@ -94,6 +94,8 @@ export class ProductController {
 
       const newData = await this.updateProductService.execute(code, data);
 
+      this.cache.updateCache(code, newData);
+
       return res.json(newData);
     } catch (err) {
       this.handleException(err, res);
@@ -109,6 +111,8 @@ export class ProductController {
       }
 
       const data = await this.deleteProductService.execute({ code });
+
+      this.cache.updateCache(code);
 
       return res.json({ status: data });
     } catch (err) {

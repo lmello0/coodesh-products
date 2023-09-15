@@ -1,7 +1,7 @@
 export type StatusType = 'draft' | 'trash' | 'published';
 
 export interface IProduct {
-  code: number;
+  code: string;
   status: StatusType;
   imported_t: Date;
   url: string;
