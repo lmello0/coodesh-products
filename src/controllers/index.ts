@@ -5,6 +5,7 @@ import { GetProductService } from '../services/GetProductService';
 import { GetProductsService } from '../services/GetProductsService';
 import { UpdateProductService } from '../services/UpdateProductService';
 import { ProductController } from './productController';
+import { StatusController } from './statusController';
 
 const mongoRepository = new MongoRepository();
 const redisRepository = new RedisRepository();
@@ -22,4 +23,6 @@ const productController = new ProductController(
   redisRepository,
 );
 
-export { productController };
+const statusController = new StatusController();
+
+export { productController, statusController };

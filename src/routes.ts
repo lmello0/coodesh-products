@@ -1,10 +1,10 @@
 import { Request, Response, Router } from 'express';
-import { productController } from './controllers';
+import { productController, statusController } from './controllers';
 
 const router = Router();
 
 router.get('/', (req: Request, res: Response) => {
-  res.json({ status: 'Online' });
+  return statusController.getStatus(req, res);
 });
 
 router.get('/products', (req: Request, res: Response) => {

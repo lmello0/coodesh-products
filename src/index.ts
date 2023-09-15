@@ -1,71 +1,55 @@
 import 'dotenv/config';
 import mongoose from 'mongoose';
-import { run } from './db/mongo';
 import { app } from './app';
-import { Server } from 'http';
 import { redis } from './db/redis';
+import { connectionStatus } from './controllers/statusController';
 
-async function exit(server?: Server) {
-  try {
-    if (server) {
-      await new Promise((resolve) => server.close(resolve));
-      console.log('Server closed!');
-    }
+const dbUser = process.env.MONGODB_USER || '';
+const dbPassword = process.env.MONGODB_PASSWORD || '';
 
-    await redis.quit();
-    console.log('Connection with Redis, finished');
+let dbURL = process.env.MONGODB_URL || '';
 
-    await mongoose.connection.close();
-    console.log('Connection with MongoDB, finished');
+dbURL = dbURL.replace('<user>', dbUser);
+dbURL = dbURL.replace('<password>', dbPassword);
 
-    console.log('All connections cleared');
-  } catch (err) {
-    console.error(err);
+const port = process.env.PORT || 3000;
 
-    process.exit(1);
-  } finally {
-    console.log('Bye!');
+const server = app.listen(port, () => {
+  connectionStatus.apiStatus = 'Online';
+  console.log(`API listening on http://localhost:${port}`);
+});
 
-    process.exit(0);
-  }
-}
+redis.connect().then(() => {
+  connectionStatus.redisStatus = 'Online';
+  console.log('Connected to Redis');
+});
+
+mongoose.connect(dbURL).then(() => {
+  connectionStatus.mongoStatus = 'Online';
+  console.log('Connected to MongoDB');
+});
 
 redis.on('error', (err) => {
-  console.error('Redis connection error: ', err);
-  exit();
+  console.error(err);
+  connectionStatus.redisStatus = 'Offline';
 });
 
 mongoose.connection.on('error', (err) => {
-  console.error('MongoDB connection error: ', err);
-  exit();
+  console.error(err);
+  connectionStatus.mongoStatus = 'Offline';
 });
 
-run()
-  .then(async () => {
-    try {
-      await redis.connect();
-      console.log('Connected to Redis');
-    } catch (err) {
-      console.error(err);
-      await exit();
-    }
+process.on('SIGINT', async () => {
+  console.warn('\nSIGINT received, shutting down the API...');
 
-    const port = process.env.PORT || 3000;
-    const server = app.listen(port, () => {
-      console.log(`Server online on localhost:${port}`);
-    });
+  await new Promise((resolve) => server.close(resolve));
+  console.log('Server closed!');
 
-    process.on('SIGINT', async () => {
-      console.warn('\nSIGINT received, shutting down the server...');
+  await redis.quit();
+  console.log('Redis connection finished');
 
-      await exit(server);
-      console.log('Application finished');
+  await mongoose.connection.close();
+  console.log('MongoDB connection finished');
+});
 
-      process.exit();
-    });
-  })
-  .catch(async (err) => {
-    console.error(err);
-
-    await exit();
-  });
+export { connectionStatus };
