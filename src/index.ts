@@ -6,7 +6,6 @@ import { redis } from './db/redis';
 import { connectionStatus } from './controllers/statusController';
 import { runScheduledTask } from './utils/runTask';
 import { worker } from './worker';
-import { parseCronSchedule } from './utils/parseCron';
 
 const port = process.env.PORT || 3000;
 
@@ -31,11 +30,7 @@ process.on('SIGINT', async () => {
 });
 
 const syncInterval = process.env.SYNC_INTERVAL || '0 0 * * *';
-const parsedSyncInterval = parseCronSchedule(syncInterval);
 
-console.log(
-  `Sync will occur at ${parsedSyncInterval.hour}:${parsedSyncInterval.minute}`,
-);
 runScheduledTask(syncInterval, async () => {
   console.log('Starting sync');
   await worker.sync();

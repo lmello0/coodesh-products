@@ -28,8 +28,8 @@ export class ProductController {
 
   async getProducts(req: Request, res: Response) {
     try {
-      const page = parseInt(req.params.page) || 1;
-      const limit = parseInt(req.params.limit) || 100;
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 100;
 
       const key = `${req.originalUrl}:${page}:${limit}`;
       const cachedData = await this.cache.get(key);
