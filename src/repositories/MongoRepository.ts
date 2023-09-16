@@ -2,7 +2,9 @@ import { DeleteProductDTO } from '../dtos/DeleteProductDTO';
 import { GetProductDTO } from '../dtos/GetProductDTO';
 import { UpdateProductDTO } from '../dtos/UpdateProductDTO';
 import { NotFoundException } from '../exceptions/NotFoundException';
+import { IHist } from '../interfaces/IHist';
 import { IProduct } from '../interfaces/IProduct';
+import { History } from '../models/History';
 import { Product } from '../models/Product';
 import { MongoRepositoryProtocol } from './MongoRepositoryProtocol';
 
@@ -60,5 +62,13 @@ export class MongoRepository implements MongoRepositoryProtocol {
     }
 
     return `${data.code} deleted`;
+  }
+
+  async insertProduct(data: object): Promise<void> {
+    await new Product(data).save();
+  }
+
+  async insertHist(data: IHist): Promise<void> {
+    await new History(data).save();
   }
 }

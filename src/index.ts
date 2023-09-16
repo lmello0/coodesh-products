@@ -1,16 +1,12 @@
 import 'dotenv/config';
+import { dbURL } from './db/mongo';
 import mongoose from 'mongoose';
 import { app } from './app';
 import { redis } from './db/redis';
 import { connectionStatus } from './controllers/statusController';
-
-const dbUser = process.env.MONGODB_USER || '';
-const dbPassword = process.env.MONGODB_PASSWORD || '';
-
-let dbURL = process.env.MONGODB_URL || '';
-
-dbURL = dbURL.replace('<user>', dbUser);
-dbURL = dbURL.replace('<password>', dbPassword);
+import { runScheduledTask } from './utils/runTask';
+import { worker } from './worker';
+import { parseCronSchedule } from './utils/parseCron';
 
 const port = process.env.PORT || 3000;
 
@@ -19,25 +15,7 @@ const server = app.listen(port, () => {
   console.log(`API listening on http://localhost:${port}`);
 });
 
-redis.connect().then(() => {
-  connectionStatus.redisStatus = 'Online';
-  console.log('Connected to Redis');
-});
-
-mongoose.connect(dbURL).then(() => {
-  connectionStatus.mongoStatus = 'Online';
-  console.log('Connected to MongoDB');
-});
-
-redis.on('error', (err) => {
-  console.error(err);
-  connectionStatus.redisStatus = 'Offline';
-});
-
-mongoose.connection.on('error', (err) => {
-  console.error(err);
-  connectionStatus.mongoStatus = 'Offline';
-});
+mongoose.connect(dbURL);
 
 process.on('SIGINT', async () => {
   console.warn('\nSIGINT received, shutting down the API...');
@@ -50,6 +28,18 @@ process.on('SIGINT', async () => {
 
   await mongoose.connection.close();
   console.log('MongoDB connection finished');
+});
+
+const syncInterval = process.env.SYNC_INTERVAL || '0 0 * * *';
+const parsedSyncInterval = parseCronSchedule(syncInterval);
+
+console.log(
+  `Sync will occur at ${parsedSyncInterval.hour}:${parsedSyncInterval.minute}`,
+);
+runScheduledTask(syncInterval, async () => {
+  console.log('Starting sync');
+  await worker.sync();
+  console.log('Sync finished');
 });
 
 export { connectionStatus };

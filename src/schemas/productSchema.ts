@@ -4,7 +4,7 @@ import { unixNow } from '../utils/unixNow';
 
 const productSchema = new mongoose.Schema<IProduct>({
   code: String,
-  status: String,
+  status: { type: String, default: 'published' },
   imported_t: { type: Date, default: unixNow() },
   url: String,
   creator: String,
