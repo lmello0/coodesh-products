@@ -4,8 +4,10 @@ import { UpdateProductDTO } from '../dtos/UpdateProductDTO';
 import { NotFoundException } from '../exceptions/NotFoundException';
 import { IHist } from '../interfaces/IHist';
 import { IProduct } from '../interfaces/IProduct';
+import { IUser } from '../interfaces/IUser';
 import { History } from '../models/History';
 import { Product } from '../models/Product';
+import { User } from '../models/User';
 import { MongoRepositoryProtocol } from './MongoRepositoryProtocol';
 
 export class MongoRepository implements MongoRepositoryProtocol {
@@ -74,5 +76,13 @@ export class MongoRepository implements MongoRepositoryProtocol {
 
   async findLastSync(): Promise<IHist | null> {
     return await History.findOne({}, {}, { sort: { created_at: -1 } });
+  }
+
+  async findUser(data: string): Promise<IUser> {
+    return await User.findOne({ apiKey: data }).select('-_id');
+  }
+
+  async updateUser(data: IUser): Promise<void | null> {
+    return await User.findOneAndUpdate({ apiKey: data.apiKey }, data);
   }
 }

@@ -4,9 +4,12 @@ import { DeleteProductService } from '../services/DeleteProductService';
 import { GetProductService } from '../services/GetProductService';
 import { GetProductsService } from '../services/GetProductsService';
 import { GetStatusService } from '../services/GetStatusService';
+import { GetUserService } from '../services/GetUserService';
 import { UpdateProductService } from '../services/UpdateProductService';
+import { UpdateUserService } from '../services/UpdateUserService';
 import { ProductController } from './productController';
 import { StatusController } from './statusController';
+import { UserController } from './userController';
 
 const mongoRepository = new MongoRepository();
 const redisRepository = new RedisRepository();
@@ -25,7 +28,11 @@ const productController = new ProductController(
 );
 
 const getStatusService = new GetStatusService(mongoRepository);
-
 const statusController = new StatusController(getStatusService);
 
-export { productController, statusController };
+const getUserService = new GetUserService(mongoRepository);
+const updateUserService = new UpdateUserService(mongoRepository);
+
+const userController = new UserController(getUserService, updateUserService);
+
+export { productController, statusController, userController };

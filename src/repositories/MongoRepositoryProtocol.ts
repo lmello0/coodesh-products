@@ -3,6 +3,7 @@ import { GetProductDTO } from '../dtos/GetProductDTO';
 import { UpdateProductDTO } from '../dtos/UpdateProductDTO';
 import { IHist } from '../interfaces/IHist';
 import { IProduct } from '../interfaces/IProduct';
+import { IUser } from '../interfaces/IUser';
 
 export interface MongoRepositoryProtocol {
   findAll(page: number, limit: number): Promise<IProduct[]>;
@@ -18,4 +19,8 @@ export interface MongoRepositoryProtocol {
   insertHist(data: IHist): Promise<void>;
 
   findLastSync(): Promise<IHist | null>;
+
+  findUser(data: string): Promise<IUser>;
+
+  updateUser(data: IUser): Promise<void | null>;
 }

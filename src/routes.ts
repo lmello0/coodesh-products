@@ -1,7 +1,15 @@
-import { Request, Response, Router } from 'express';
-import { productController, statusController } from './controllers';
+import { NextFunction, Request, Response, Router } from 'express';
+import {
+  productController,
+  statusController,
+  userController,
+} from './controllers';
 
 const router = Router();
+
+router.use((req: Request, res: Response, next: NextFunction) => {
+  return userController.validateUser(req, res, next);
+});
 
 router.get('/', (req: Request, res: Response) => {
   return statusController.getStatus(req, res);

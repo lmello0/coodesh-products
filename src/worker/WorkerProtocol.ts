@@ -1,3 +1,3 @@
 export interface WorkerProtocol {
-  getLinks(): Promise<string[]>;
+  sync(): Promise<void>;
 }

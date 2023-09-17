@@ -5,8 +5,9 @@ import { DownloadProtocol } from './DownloadProtocol';
 import { ExtractorProtocol } from './ExtractorProtocol';
 import { ProcessorProtocol } from './ProcessorProtocol';
 import path from 'path';
+import { WorkerProtocol } from './WorkerProtocol';
 
-export class Worker {
+export class Worker implements WorkerProtocol {
   constructor(
     private readonly downloadLocation: string,
     private readonly downloader: DownloadProtocol,
