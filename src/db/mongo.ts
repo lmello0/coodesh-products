@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { connectionStatus } from '../controllers/statusController';
+import { connectionStatus } from '../services/GetStatusService';
 
 const dbUser = process.env.MONGODB_USER || '';
 const dbPassword = process.env.MONGODB_PASSWORD || '';

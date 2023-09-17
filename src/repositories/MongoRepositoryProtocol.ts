@@ -11,9 +11,11 @@ export interface MongoRepositoryProtocol {
 
   insertProduct(data: IProduct): Promise<void>;
 
-  insertHist(data: IHist): Promise<void>;
-
   updateOne(data: UpdateProductDTO): Promise<IProduct>;
 
   delete(data: DeleteProductDTO): Promise<string>;
+
+  insertHist(data: IHist): Promise<void>;
+
+  findLastSync(): Promise<IHist | null>;
 }

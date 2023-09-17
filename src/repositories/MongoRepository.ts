@@ -71,4 +71,8 @@ export class MongoRepository implements MongoRepositoryProtocol {
   async insertHist(data: IHist): Promise<void> {
     await new History(data).save();
   }
+
+  async findLastSync(): Promise<IHist | null> {
+    return await History.findOne({}, {}, { sort: { created_at: -1 } });
+  }
 }

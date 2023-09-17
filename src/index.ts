@@ -3,7 +3,7 @@ import { dbURL } from './db/mongo';
 import mongoose from 'mongoose';
 import { app } from './app';
 import { redis } from './db/redis';
-import { connectionStatus } from './controllers/statusController';
+import { connectionStatus } from './services/GetStatusService';
 import { runScheduledTask } from './utils/runTask';
 import { worker } from './worker';
 

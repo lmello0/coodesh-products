@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --watch",
+    "test:coverage": "jest --coverage",
     "build": "tsc",
     "dev": "ts-node-dev --transpile-only src/index.ts"
   },
@@ -16,7 +17,6 @@
     "@types/luxon": "^3.3.2",
     "@types/morgan": "^1.9.5",
     "@types/redis": "^4.0.11",
-    "@types/tar": "^6.1.6",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "@typescript-eslint/parser": "^6.7.0",
     "dotenv": "^16.3.1",
@@ -36,10 +36,8 @@
     "express": "^4.18.2",
     "joi": "^17.10.1",
     "luxon": "^3.4.3",
-    "mongodb": "^6.0.0",
     "mongoose": "^7.5.1",
     "morgan": "^1.10.0",
-    "redis": "^4.6.8",
-    "tar": "^6.2.0"
+    "redis": "^4.6.8"
   }
 }

@@ -1,5 +1,5 @@
 import { createClient } from 'redis';
-import { connectionStatus } from '../controllers/statusController';
+import { connectionStatus } from '../services/GetStatusService';
 
 const redis = createClient({
   url: process.env.REDIS_URL,
