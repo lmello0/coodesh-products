@@ -2,7 +2,7 @@
 
 >  This is a challenge by [Coodesh](https://coodesh.com/)
 
-Desafio técnico coodesh, que consiste em criar uma API capaz de gerenciar um banco de dados com informações de produtos.
+Desafio técnico coodesh, que consiste em criar uma API capaz de gerenciar um banco de dados com informações de produtos. (Products Parser 20230105)
 
 ## Tecnologias utilizadas
 
